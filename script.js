@@ -80,6 +80,11 @@ class DDCMUNManager {
 
         // Select all checkbox
         this.selectAllCheckbox = document.getElementById('select-all-delegates');
+
+        // Caucus settings
+        this.caucusSettingsElement = document.getElementById('caucus-settings');
+        this.caucusTotalTimeInput = document.getElementById('caucus-total-time');
+        this.speakerTimeInput = document.getElementById('speaker-time');
     }
 
     setupEventListeners() {
@@ -446,6 +451,18 @@ class DDCMUNManager {
         // Calculate total remaining time
         this.timeRemaining = minutes * 60 + seconds;
 
+        // Caucus-specific timer logic
+        if (this.currentListType === 'Moderated Caucus' || this.currentListType === 'Unmoderated Caucus') {
+            // Get caucus total time and speaker time
+            const caucusTotalTime = parseInt(this.caucusTotalTimeInput.value) * 60 || 600; // Default 10 minutes
+            const speakerTime = parseInt(this.speakerTimeInput.value) || 60; // Default 60 seconds
+
+            // Set up caucus-specific timer state
+            this.caucusTotalTimeRemaining = caucusTotalTime;
+            this.currentSpeakerTimeRemaining = speakerTime;
+            this.speakerCount = 0;
+        }
+
         // Validate time
         if (this.timeRemaining <= 0) {
             this.showPopup({
@@ -469,18 +486,43 @@ class DDCMUNManager {
         this.timerInterval = setInterval(() => {
             if (!this.timerPaused) {
                 this.timeRemaining--;
+                
+                // Caucus-specific time tracking
+                if (this.currentListType === 'Moderated Caucus' || this.currentListType === 'Unmoderated Caucus') {
+                    this.caucusTotalTimeRemaining--;
+                    this.currentSpeakerTimeRemaining--;
+
+                    // Check if current speaker's time is up
+                    if (this.currentSpeakerTimeRemaining <= 0) {
+                        this.nextSpeaker();
+                        
+                        // Reset speaker time if more speakers are available
+                        if (this.speakersList.length > 0) {
+                            this.currentSpeakerTimeRemaining = parseInt(this.speakerTimeInput.value) || 60;
+                            this.speakerCount++;
+                        }
+                    }
+
+                    // Check if total caucus time is up
+                    if (this.caucusTotalTimeRemaining <= 0) {
+                        this.stopTimer();
+                        this.showPopup({
+                            title: 'Caucus Ended',
+                            message: `${this.currentListType} has ended.`,
+                            type: 'info',
+                            showCancel: false
+                        });
+                    }
+                }
+
                 this.updateTimerDisplay();
 
-                // Check if timer has ended
+                // Regular timer end check
                 if (this.timeRemaining <= 0) {
                     this.stopTimer();
-                    
-                    // Play sound (with error handling)
                     this.timerSound.play().catch(() => {
                         console.log('Timer sound could not be played');
                     });
-
-                    // Show time up popup
                     this.showPopup({
                         title: 'Time Up',
                         message: 'The timer has finished.',
@@ -513,7 +555,20 @@ class DDCMUNManager {
         const totalMinutes = Math.floor((parseInt(this.minutesInput.value) || 0) * 60 + (parseInt(this.secondsInput.value) || 0)) / 60;
         const totalSeconds = (parseInt(this.minutesInput.value) || 0) * 60 + (parseInt(this.secondsInput.value) || 0);
         
-        this.timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} / ${String(Math.floor(totalMinutes)).padStart(2, '0')}:${String(totalSeconds % 60).padStart(2, '0')}`;
+        // Default timer display
+        let displayText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} / ${String(Math.floor(totalMinutes)).padStart(2, '0')}:${String(totalSeconds % 60).padStart(2, '0')}`;
+        
+        // Caucus-specific display
+        if (this.currentListType === 'Moderated Caucus' || this.currentListType === 'Unmoderated Caucus') {
+            const caucusMinutes = Math.floor(this.caucusTotalTimeRemaining / 60);
+            const caucusSeconds = this.caucusTotalTimeRemaining % 60;
+            const speakerMinutes = Math.floor(this.currentSpeakerTimeRemaining / 60);
+            const speakerSeconds = this.currentSpeakerTimeRemaining % 60;
+            
+            displayText = `Caucus: ${String(caucusMinutes).padStart(2, '0')}:${String(caucusSeconds).padStart(2, '0')} | Speaker: ${String(speakerMinutes).padStart(2, '0')}:${String(speakerSeconds).padStart(2, '0')}`;
+        }
+        
+        this.timerDisplay.textContent = displayText;
     }
 
     setTimerPreset(seconds) {
@@ -649,10 +704,12 @@ class DDCMUNManager {
         this.updateSpeakersListDisplay();
         this.updateListTypeButtons();
         
-        // Update UI based on list type
-        if (type === 'Unmoderated Caucus') {
-            this.addToListBtn.textContent = 'Start Unmod';
+        // Show/hide caucus settings based on list type
+        if (type === 'Moderated Caucus' || type === 'Unmoderated Caucus') {
+            this.caucusSettingsElement.classList.remove('hidden');
+            this.addToListBtn.textContent = type === 'Unmoderated Caucus' ? 'Start Unmod' : 'Add to List';
         } else {
+            this.caucusSettingsElement.classList.add('hidden');
             this.addToListBtn.textContent = 'Add to List';
         }
     }

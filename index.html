@@ -85,6 +85,16 @@
                                         <button class="btn small" data-time="120">2m</button>
                                         <button class="btn small" data-time="180">3m</button>
                                     </div>
+                                    <div class="caucus-settings hidden" id="caucus-settings">
+                                        <div class="form-group">
+                                            <label for="caucus-total-time">Total Caucus Time (minutes):</label>
+                                            <input type="number" id="caucus-total-time" min="1" max="60" value="10">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="speaker-time">Speaker Time (seconds):</label>
+                                            <input type="number" id="speaker-time" min="10" max="300" value="60">
+                                        </div>
+                                    </div>
                                     <div class="timer-buttons">
                                         <button id="resume-btn" class="btn primary">Start</button>
                                         <button id="pause-btn" class="btn">Pause</button>

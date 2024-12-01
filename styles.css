@@ -164,7 +164,7 @@ body {
 
 /* Session Page Styles */
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 header {
@@ -592,6 +592,35 @@ textarea#delegates-list:focus {
 .timer.timeout {
     animation: timerFlash 1s ease-in-out infinite;
     color: #ff4444;
+}
+
+.caucus-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 0;
+    padding: 15px;
+    background-color: var(--background-color);
+    border-radius: 4px;
+}
+
+.caucus-settings .form-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.caucus-settings label {
+    margin-right: 10px;
+    font-size: 0.9em;
+    color: var(--text-color-light);
+}
+
+.caucus-settings input {
+    width: 80px;
+    padding: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
 }
 
 @media (max-width: 768px) {
