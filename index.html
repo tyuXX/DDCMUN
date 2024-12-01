@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDCMUN | Session Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="home-page" id="home-page">
+            <header class="home-header">
+                <h1 id="title">DDCMUN</h1>
+            </header>
+            
+            <div class="session-form">
+                <h2>Create New Session</h2>
+                <form id="new-session-form">
+                    <div class="form-group">
+                        <label for="committee-name">Committee Name:</label>
+                        <input type="text" id="committee-name" required placeholder="e.g., UNSC, UNHRC">
+                    </div>
+                    <div class="form-group">
+                        <label for="agenda-item">Agenda Item:</label>
+                        <input type="text" id="agenda-item" required placeholder="Enter the topic of discussion">
+                    </div>
+                    <div class="form-group">
+                        <label for="delegates-list">Delegates List (one per line):</label>
+                        <textarea id="delegates-list" required placeholder="Enter each delegate/country on a new line&#10;Example:&#10;United States of America&#10;United Kingdom&#10;France"></textarea>
+                    </div>
+                    <button type="submit" class="btn primary">Create Session</button>
+                </form>
+            </div>
+
+            <div class="recent-sessions" id="recent-sessions">
+                <div class="sessions-header">
+                    <h2>Recent Sessions</h2>
+                    <div class="session-actions">
+                        <input type="file" id="load-session-file" accept=".ddcmun" style="display: none;">
+                        <button class="btn" id="load-session-btn">Load Session File</button>
+                    </div>
+                </div>
+                <div class="sessions-list">
+                    <!-- Recent sessions will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="session-page hidden" id="session-page">
+            <header>
+                <div class="header-left">
+                    <h2 class="committee-name">Committee: <span id="committee-display">Not Set</span></h2>
+                    <h3 class="topic">Current Topic: <span id="topic-display">Not Set</span></h3>
+                    <div class="present-count">Present: <span id="present-count">0</span> / <span id="total-count">0</span></div>
+                </div>
+                <div class="header-right">
+                    <img src="assets/mun-logo.png" alt="MUN Logo" class="logo">
+                    <button class="btn" id="save-session-btn">Save Session</button>
+                    <button class="btn" id="back-to-home">Exit Session</button>
+                </div>
+            </header>
+
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="left-panel">
+                        <div class="control-panel">
+                            <div class="debate-controls">
+                                <button class="btn primary" id="gsl-btn">General Speakers List</button>
+                                <button class="btn" id="single-speaker-btn">Single Speaker</button>
+                                <button class="btn" id="moderated-btn">Moderated Caucus</button>
+                                <button class="btn" id="unmoderated-btn">Unmoderated Caucus</button>
+                                <button class="btn" id="voting-btn">Voting Procedure</button>
+                            </div>
+
+                            <div class="timer-settings">
+                                <div class="time-input">
+                                    <label>Speaker Time:</label>
+                                    <input type="number" id="minutes" min="0" max="59" value="1">
+                                    <span>:</span>
+                                    <input type="number" id="seconds" min="0" max="59" value="30">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="speakers-section">
+                            <div class="current-list-type">Current List: <span id="current-list-type">None</span></div>
+                            <div class="speakers-list" id="speakers-list">
+                                <!-- Speakers will be added here dynamically -->
+                            </div>
+                            <div class="list-controls">
+                                <button class="btn" id="yield-btn">Yield to Delegate</button>
+                                <button class="btn primary" id="next-speaker-btn">Next Speaker</button>
+                            </div>
+                        </div>
+
+                        <div class="timer-display">
+                            <div class="time" id="timer">00:00 / 01:30</div>
+                            <div class="timer-controls">
+                                <button class="btn" id="resume-btn">Resume</button>
+                                <button class="btn" id="pause-btn">Pause</button>
+                                <button class="btn" id="stop-btn">Stop</button>
+                            </div>
+                            <div class="list-management">
+                                <button class="btn" id="up-btn">Up</button>
+                                <button class="btn" id="down-btn">Down</button>
+                                <button class="btn" id="delete-btn">Delete</button>
+                                <button class="btn" id="clear-btn">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="right-panel">
+                        <div class="delegates-panel">
+                            <h3>Present Delegates</h3>
+                            <div class="delegates-search">
+                                <input type="text" id="delegate-search" placeholder="Search delegates...">
+                            </div>
+                            <div class="delegates-list" id="present-delegates">
+                                <!-- Present delegates will be listed here -->
+                            </div>
+                            <div class="delegate-actions">
+                                <button class="btn" id="add-to-list-btn">Add to List</button>
+                                <button class="btn" id="mark-absent-btn">Mark Absent</button>
+                                <button class="btn" id="mark-present-btn">Mark Present</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="popup-overlay" id="popup-overlay">
+        <div class="popup">
+            <div class="popup-content">
+                <h3 class="popup-title" id="popup-title">Title</h3>
+                <p class="popup-message" id="popup-message">Message</p>
+                <div class="popup-actions">
+                    <button class="btn" id="popup-cancel">Cancel</button>
+                    <button class="btn primary" id="popup-confirm">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
