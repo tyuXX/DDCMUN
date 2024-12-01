@@ -65,7 +65,7 @@
                     <div class="left-panel">
                         <div class="control-panel">
                             <div class="debate-controls">
-                                <button class="btn primary" id="gsl-btn">General Speakers List</button>
+                                <button class="btn" id="gsl-btn">General Speakers List</button>
                                 <button class="btn" id="single-speaker-btn">Single Speaker</button>
                                 <button class="btn" id="moderated-btn">Moderated Caucus</button>
                                 <button class="btn" id="unmoderated-btn">Unmoderated Caucus</button>
@@ -73,38 +73,50 @@
                             </div>
 
                             <div class="timer-settings">
-                                <div class="time-input">
-                                    <label>Speaker Time:</label>
-                                    <input type="number" id="minutes" min="0" max="59" value="1">
-                                    <span>:</span>
-                                    <input type="number" id="seconds" min="0" max="59" value="30">
+                                <div class="timer-controls">
+                                    <div class="time-input">
+                                        <input type="number" id="minutes" min="0" max="59" value="0">
+                                        <span>:</span>
+                                        <input type="number" id="seconds" min="0" max="59" value="30">
+                                    </div>
+                                    <div class="timer-presets">
+                                        <button class="btn small" data-time="30">30s</button>
+                                        <button class="btn small" data-time="60">1m</button>
+                                        <button class="btn small" data-time="120">2m</button>
+                                        <button class="btn small" data-time="180">3m</button>
+                                    </div>
+                                    <div class="timer-buttons">
+                                        <button id="resume-btn" class="btn primary">Start</button>
+                                        <button id="pause-btn" class="btn">Pause</button>
+                                        <button id="stop-btn" class="btn">Stop</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="speakers-section">
-                            <div class="current-list-type">Current List: <span id="current-list-type">None</span></div>
+                            <div class="speakers-list-header">
+                                <h3>Speakers List</h3>
+                                <div class="list-type">Current List: <span id="current-list-type">None</span></div>
+                                <div class="speakers-list-actions">
+                                    <button id="next-speaker-btn" class="btn">Next Speaker</button>
+                                    <button id="clear-list-btn" class="btn">Clear List</button>
+                                </div>
+                            </div>
                             <div class="speakers-list" id="speakers-list">
                                 <!-- Speakers will be added here dynamically -->
                             </div>
                             <div class="list-controls">
                                 <button class="btn" id="yield-btn">Yield to Delegate</button>
-                                <button class="btn primary" id="next-speaker-btn">Next Speaker</button>
                             </div>
                         </div>
 
                         <div class="timer-display">
                             <div class="time" id="timer">00:00 / 01:30</div>
-                            <div class="timer-controls">
-                                <button class="btn" id="resume-btn">Resume</button>
-                                <button class="btn" id="pause-btn">Pause</button>
-                                <button class="btn" id="stop-btn">Stop</button>
-                            </div>
                             <div class="list-management">
                                 <button class="btn" id="up-btn">Up</button>
                                 <button class="btn" id="down-btn">Down</button>
                                 <button class="btn" id="delete-btn">Delete</button>
-                                <button class="btn" id="clear-btn">Clear</button>
                             </div>
                         </div>
                     </div>
@@ -112,11 +124,17 @@
                     <div class="right-panel">
                         <div class="delegates-panel">
                             <h3>Present Delegates</h3>
-                            <div class="delegates-search">
-                                <input type="text" id="delegate-search" placeholder="Search delegates...">
-                            </div>
-                            <div class="delegates-list" id="present-delegates">
-                                <!-- Present delegates will be listed here -->
+                            <div class="delegate-list">
+                                <div class="delegate-header">
+                                    <div class="select-all">
+                                        <input type="checkbox" id="select-all-delegates">
+                                        <label for="select-all-delegates">Select All</label>
+                                    </div>
+                                    <input type="text" id="delegate-search" placeholder="Search delegates...">
+                                </div>
+                                <div id="present-delegates">
+                                    <!-- Present delegates will be listed here -->
+                                </div>
                             </div>
                             <div class="delegate-actions">
                                 <button class="btn" id="add-to-list-btn">Add to List</button>
