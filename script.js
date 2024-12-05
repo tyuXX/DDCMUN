@@ -35,33 +35,31 @@ class DDCMUNManager {
         // Form elements
         this.newSessionForm = document.getElementById('new-session-form');
         this.sessionsListElement = document.querySelector('.sessions-list');
-        this.delegatesListTextarea = document.getElementById('delegates-list');
+        this.delegatesListTextarea = document.getElementById('delegates-list')
 
         // File handling elements
         this.loadSessionFile = document.getElementById('load-session-file');
         this.loadSessionBtn = document.getElementById('load-session-btn');
-        this.saveSessionBtn = document.getElementById('save-session-btn');
+        this.saveSessionBtn = document.getElementById('save-session-btn')
 
         // Display elements
         this.committeeDisplay = document.getElementById('committee-display');
         this.topicDisplay = document.getElementById('topic-display');
         this.presentCountDisplay = document.getElementById('present-count');
-        this.totalCountDisplay = document.getElementById('total-count');
         this.timerDisplay = document.getElementById('timer');
         this.speakersListElement = document.getElementById('speakers-list');
         this.currentListTypeDisplay = document.getElementById('current-list-type');
-        this.presentDelegatesElement = document.getElementById('present-delegates');
+        this.presentDelegatesElement = document.getElementById('present-delegates')
 
         // Input elements
         this.minutesInput = document.getElementById('minutes');
         this.secondsInput = document.getElementById('seconds');
-        this.delegateSearchInput = document.getElementById('delegate-search');
+        this.delegateSearchInput = document.getElementById('delegate-search')
 
         // Timer buttons
-        this.resumeBtn = document.getElementById('resume-btn');
         this.pauseBtn = document.getElementById('pause-btn');
         this.stopBtn = document.getElementById('stop-btn');
-        this.timerPresetBtns = document.querySelectorAll('.timer-presets button');
+        this.timerPresetBtns = document.querySelectorAll('.timer-presets button')
 
         // List management buttons
         this.nextSpeakerBtn = document.getElementById('next-speaker-btn');
@@ -69,17 +67,17 @@ class DDCMUNManager {
         this.backToHomeBtn = document.getElementById('back-to-home');
         this.addToListBtn = document.getElementById('add-to-list-btn');
         this.markAbsentBtn = document.getElementById('mark-absent-btn');
-        this.markPresentBtn = document.getElementById('mark-present-btn');
+        this.markPresentBtn = document.getElementById('mark-present-btn')
 
         // Debate type buttons
         this.gslBtn = document.getElementById('gsl-btn');
         this.singleSpeakerBtn = document.getElementById('single-speaker-btn');
         this.moderatedBtn = document.getElementById('moderated-btn');
         this.unmoderatedBtn = document.getElementById('unmoderated-btn');
-        this.votingBtn = document.getElementById('voting-btn');
+        this.votingBtn = document.getElementById('voting-btn')
 
         // Select all checkbox
-        this.selectAllCheckbox = document.getElementById('select-all-delegates');
+        this.selectAllCheckbox = document.getElementById('select-all-delegates')
 
         // Caucus settings
         this.caucusSettingsElement = document.getElementById('caucus-settings');
@@ -95,9 +93,21 @@ class DDCMUNManager {
         });
 
         // Timer controls
-        this.resumeBtn.addEventListener('click', () => this.startTimer());
-        this.pauseBtn.addEventListener('click', () => this.pauseTimer());
-        this.stopBtn.addEventListener('click', () => this.stopTimer());
+        this.pauseBtn.addEventListener('click', () => {
+            if (!this.timerRunning) {
+                this.startTimer();
+                this.pauseBtn.textContent = 'Pause';
+                this.pauseBtn.classList.remove('primary');
+            } else {
+                this.togglePause();
+            }
+        });
+
+        this.stopBtn.addEventListener('click', () => {
+            this.stopTimer();
+            this.pauseBtn.textContent = 'Start';
+            this.pauseBtn.classList.add('primary');
+        });
 
         // Timer presets
         this.timerPresetBtns.forEach(btn => {
@@ -182,7 +192,7 @@ class DDCMUNManager {
         // Configure buttons
         this.popupConfirm.textContent = settings.confirmText;
         this.popupCancel.textContent = settings.cancelText;
-        this.popupCancel.style.display = settings.showCancel ? 'block' : 'none';
+        this.popupCancel.style.display = settings.showCancel ? 'block' : 'none'
 
         // Setup button handlers
         this.popupConfirm.onclick = () => {
@@ -302,25 +312,36 @@ class DDCMUNManager {
     }
 
     loadSession(session) {
-        if (!session) return;
-
-        this.currentSession = session;
-        this.committee = session.committee;
-        this.topic = session.topic;
-        this.delegates = session.delegates || [];
-        this.presentDelegates = session.presentDelegates || [];
-        this.speakersList = session.speakersList || [];
-        this.currentListType = session.currentListType || 'None';
-        
-        if (this.currentListTypeDisplay) {
-            this.currentListTypeDisplay.textContent = this.currentListType;
+        try {
+            // Load basic session data
+            this.committee = session.committee;
+            this.topic = session.topic;
+            this.delegates = session.delegates || [];
+            this.speakersList = session.speakersList || [];
+            this.presentDelegates = session.presentDelegates || this.delegates.map(d => d.name);
+            
+            // Update UI
+            this.updateDisplay();
+            
+            // Show session page
+            this.showSessionPage();
+            
+            // Show success message
+            this.showPopup({
+                title: 'Success',
+                message: `Session for ${this.committee} has been loaded.`,
+                type: 'success',
+                showCancel: false
+            });
+        } catch (error) {
+            console.error('Error loading session:', error);
+            this.showPopup({
+                title: 'Error',
+                message: 'Failed to load session data.',
+                type: 'error',
+                showCancel: false
+            });
         }
-
-        this.updateDisplay();
-        this.updatePresentDelegatesList();
-        this.updateSpeakersListDisplay();
-        this.updateListTypeButtons();
-        this.updatePresentCount();
     }
 
     showHomePage() {
@@ -335,10 +356,15 @@ class DDCMUNManager {
     }
 
     updateDisplay() {
-        this.committeeDisplay.textContent = this.committee;
-        this.topicDisplay.textContent = this.topic;
-        this.presentCountDisplay.textContent = this.presentCount;
-        this.totalCountDisplay.textContent = this.totalCount;
+        if (this.committeeDisplay) {
+            this.committeeDisplay.textContent = this.committee || 'Not Set';
+        }
+        if (this.topicDisplay) {
+            this.topicDisplay.textContent = this.topic || 'Not Set';
+        }
+        this.updatePresentCount();
+        this.updatePresentDelegatesList();
+        this.updateSpeakersListDisplay();
     }
 
     updatePresentDelegatesList() {
@@ -477,7 +503,6 @@ class DDCMUNManager {
         // Set timer state
         this.timerRunning = true;
         this.timerPaused = false;
-        this.resumeBtn.textContent = 'Resume';
         
         // Update initial display
         this.updateTimerDisplay();
@@ -538,15 +563,18 @@ class DDCMUNManager {
         clearInterval(this.timerInterval);
         this.timerRunning = false;
         this.timerPaused = false;
-        this.resumeBtn.textContent = 'Start';
         this.timeRemaining = 0;
         this.updateTimerDisplay();
+        this.pauseBtn.textContent = 'Start';
+        this.pauseBtn.classList.add('primary');
     }
 
-    pauseTimer() {
-        if (!this.timerRunning) return;
-        this.timerPaused = !this.timerPaused;
-        this.pauseBtn.textContent = this.timerPaused ? 'Resume' : 'Pause';
+    togglePause() {
+        if (this.timerRunning) {
+            this.timerPaused = !this.timerPaused;
+            this.pauseBtn.textContent = this.timerPaused ? 'Resume' : 'Pause';
+            this.pauseBtn.classList.toggle('primary', this.timerPaused);
+        }
     }
 
     updateTimerDisplay() {
@@ -776,14 +804,34 @@ class DDCMUNManager {
             title: 'Delegates Marked Present',
             message: `Successfully marked ${delegatesToMarkPresent.length} delegate(s) as present.`,
             type: 'success',
-            showCancel: false,
-            confirmText: 'OK'
+            showCancel: false
         });
     }
 
     updatePresentCount() {
-        this.presentCount = this.presentDelegates.length;
-        this.updateDisplay();
+        this.presentCount = this.delegates.filter(delegate => !delegate.absent).length;
+        this.totalCount = this.delegates.length;
+        if (this.presentCountDisplay) {
+            this.presentCountDisplay.textContent = `Present: ${this.presentCount} / ${this.totalCount}`;
+        }
+    }
+
+    markDelegateAbsent(delegateName) {
+        const delegate = this.delegates.find(d => d.name === delegateName);
+        if (delegate) {
+            delegate.absent = true;
+            this.updatePresentDelegatesList();
+            this.updatePresentCount();
+        }
+    }
+
+    markDelegatePresent(delegateName) {
+        const delegate = this.delegates.find(d => d.name === delegateName);
+        if (delegate) {
+            delegate.absent = false;
+            this.updatePresentDelegatesList();
+            this.updatePresentCount();
+        }
     }
 
     handleFileLoad(event) {
@@ -793,146 +841,19 @@ class DDCMUNManager {
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
-                const session = JSON.parse(e.target.result);
-                
-                // Validate session data
-                if (!this.validateSessionData(session)) {
-                    throw new Error('Invalid session data');
-                }
-
-                // Normalize session data
-                const normalizedSession = this.normalizeSessionData(session);
-
-                // Load the session
-                this.loadSession(normalizedSession);
-                
-                // Add to recent sessions if not already present
-                this.saveRecentSession(normalizedSession);
-
-                // Show success message
-                this.showPopup({
-                    title: 'Session Loaded',
-                    message: `Successfully loaded session for ${normalizedSession.committee}`,
-                    type: 'success',
-                    showCancel: false
-                });
+                const sessionData = JSON.parse(e.target.result);
+                this.loadSession(sessionData);
             } catch (error) {
-                console.error('Session loading error:', error);
+                console.error('Error parsing session file:', error);
                 this.showPopup({
-                    title: 'Error Loading File',
-                    message: 'Unable to load the session file. Please ensure it is a valid DDCMUN session file.',
+                    title: 'Error',
+                    message: 'Failed to load session file. Make sure it is a valid DDCMUN session file.',
                     type: 'error',
                     showCancel: false
                 });
             }
         };
-
-        reader.onerror = (error) => {
-            console.error('File reading error:', error);
-            this.showPopup({
-                title: 'File Reading Error',
-                message: 'There was an error reading the file. Please try again.',
-                type: 'error',
-                showCancel: false
-            });
-        };
-
         reader.readAsText(file);
-        event.target.value = ''; // Reset file input
-    }
-
-    validateSessionData(session) {
-        // Check for required fields
-        const requiredFields = [
-            'committee', 
-            'topic', 
-            'delegates', 
-            'created'
-        ];
-
-        for (let field of requiredFields) {
-            if (!session[field]) {
-                console.error(`Missing required field: ${field}`);
-                return false;
-            }
-        }
-
-        // Validate delegates
-        if (!Array.isArray(session.delegates) || session.delegates.length === 0) {
-            console.error('Invalid delegates data');
-            return false;
-        }
-
-        return true;
-    }
-
-    normalizeSessionData(session) {
-        // Ensure consistent data structure
-        const normalizedSession = {
-            committee: session.committee,
-            topic: session.topic,
-            delegates: session.delegates.map(delegate => 
-                typeof delegate === 'string' 
-                    ? { name: delegate, absent: false } 
-                    : (delegate.name ? delegate : { name: delegate, absent: false })
-            ),
-            presentDelegates: session.presentDelegates || 
-                (session.delegates.map(d => typeof d === 'string' ? d : d.name)),
-            speakersList: session.speakersList || [],
-            currentListType: session.currentListType || 'None',
-            created: session.created || new Date().toISOString()
-        };
-
-        return normalizedSession;
-    }
-
-    loadSession(session) {
-        if (!session) {
-            console.error('Attempted to load null session');
-            return;
-        }
-
-        try {
-            // Set session data
-            this.currentSession = session;
-            this.committee = session.committee;
-            this.topic = session.topic;
-            this.delegates = session.delegates || [];
-            this.presentDelegates = session.presentDelegates || 
-                this.delegates.map(d => d.name);
-            this.speakersList = session.speakersList || [];
-            this.currentListType = session.currentListType || 'None';
-            
-            // Update UI elements
-            if (this.committeeDisplay) {
-                this.committeeDisplay.textContent = this.committee;
-            }
-            if (this.topicDisplay) {
-                this.topicDisplay.textContent = this.topic;
-            }
-            if (this.currentListTypeDisplay) {
-                this.currentListTypeDisplay.textContent = this.currentListType;
-            }
-
-            // Update various components
-            this.updateDisplay();
-            this.updatePresentDelegatesList();
-            this.updateSpeakersListDisplay();
-            this.updateListTypeButtons();
-            this.updatePresentCount();
-
-            // Show session page
-            this.showSessionPage();
-
-        } catch (error) {
-            console.error('Error loading session:', error);
-            this.showPopup({
-                title: 'Session Load Error',
-                message: 'There was a problem loading the session. Some data may be incomplete.',
-                type: 'error',
-                showCancel: false
-            });
-        }
     }
 
     saveSessionToFile() {
@@ -985,6 +906,83 @@ class DDCMUNManager {
             type: 'success',
             showCancel: false
         });
+    }
+
+    saveRecentSession(session) {
+        try {
+            // Get existing recent sessions
+            let recentSessions = JSON.parse(localStorage.getItem('recentSessions') || '[]');
+            
+            // Add new session to the beginning
+            const newSession = {
+                committee: session.committee,
+                topic: session.topic,
+                created: new Date().toISOString(),
+                delegates: session.delegates.length
+            };
+
+            // Check if similar session exists
+            const existingIndex = recentSessions.findIndex(s => 
+                s.committee === newSession.committee && 
+                s.topic === newSession.topic
+            );
+
+            // Remove if exists
+            if (existingIndex !== -1) {
+                recentSessions.splice(existingIndex, 1);
+            }
+
+            // Add to beginning of array
+            recentSessions.unshift(newSession);
+
+            // Keep only last 10 sessions
+            recentSessions = recentSessions.slice(0, 10);
+
+            // Save back to localStorage
+            localStorage.setItem('recentSessions', JSON.stringify(recentSessions));
+
+            // Update display
+            this.updateRecentSessionsList();
+        } catch (error) {
+            console.error('Error saving recent session:', error);
+        }
+    }
+
+    updateRecentSessionsList() {
+        try {
+            const recentSessions = JSON.parse(localStorage.getItem('recentSessions') || '[]');
+            const recentSessionsList = document.querySelector('.recent-sessions-list');
+            
+            if (!recentSessionsList) return;
+
+            recentSessionsList.innerHTML = '';
+            
+            if (recentSessions.length === 0) {
+                recentSessionsList.innerHTML = '<div class="no-sessions">No recent sessions</div>';
+                return;
+            }
+
+            recentSessions.forEach(session => {
+                const sessionElement = document.createElement('div');
+                sessionElement.className = 'recent-session-item';
+                
+                const date = new Date(session.created);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                
+                sessionElement.innerHTML = `
+                    <div class="session-info">
+                        <strong>${session.committee}</strong>
+                        <span>${session.topic}</span>
+                        <span>${session.delegates} delegates</span>
+                        <span class="session-date">${formattedDate}</span>
+                    </div>
+                `;
+                
+                recentSessionsList.appendChild(sessionElement);
+            });
+        } catch (error) {
+            console.error('Error updating recent sessions list:', error);
+        }
     }
 }
 

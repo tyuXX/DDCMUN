@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DDCMUN | Session Manager</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -51,7 +52,7 @@
                 <div class="header-left">
                     <h2 class="committee-name">Committee: <span id="committee-display">Not Set</span></h2>
                     <h3 class="topic">Current Topic: <span id="topic-display">Not Set</span></h3>
-                    <div class="present-count">Present: <span id="present-count">0</span> / <span id="total-count">0</span></div>
+                    <div class="present-count"><span id="present-count"></span></div>
                 </div>
                 <div class="header-right">
                     <img src="assets/mun-logo.png" alt="MUN Logo" class="logo">
@@ -96,8 +97,7 @@
                                         </div>
                                     </div>
                                     <div class="timer-buttons">
-                                        <button id="resume-btn" class="btn primary">Start</button>
-                                        <button id="pause-btn" class="btn">Pause</button>
+                                        <button id="pause-btn" class="btn primary">Start</button>
                                         <button id="stop-btn" class="btn">Stop</button>
                                     </div>
                                 </div>

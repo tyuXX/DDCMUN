@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="sphereGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    
+    <!-- Base sphere -->
+    <circle cx="16" cy="16" r="15" fill="url(#sphereGradient)" stroke="#1976D2" stroke-width="1"/>
+    
+    <!-- Meridians -->
+    <g stroke="#ffffff" stroke-width="0.5" opacity="0.4" fill="none">
+        <!-- 0° -->
+        <ellipse cx="16" cy="16" rx="15" ry="4"/>
+        <!-- 30° -->
+        <g transform="rotate(30 16 16)"><ellipse cx="16" cy="16" rx="15" ry="4"/></g>
+        <!-- 60° -->
+        <g transform="rotate(60 16 16)"><ellipse cx="16" cy="16" rx="15" ry="4"/></g>
+        <!-- 90° -->
+        <g transform="rotate(90 16 16)"><ellipse cx="16" cy="16" rx="15" ry="4"/></g>
+        <!-- 120° -->
+        <g transform="rotate(120 16 16)"><ellipse cx="16" cy="16" rx="15" ry="4"/></g>
+        <!-- 150° -->
+        <g transform="rotate(150 16 16)"><ellipse cx="16" cy="16" rx="15" ry="4"/></g>
+    </g>
+    
+    <!-- Parallels -->
+    <g stroke="#ffffff" stroke-width="0.5" opacity="0.3" fill="none">
+        <ellipse cx="16" cy="16" rx="15" ry="15"/>
+        <ellipse cx="16" cy="16" rx="11" ry="11"/>
+        <ellipse cx="16" cy="16" rx="7" ry="7"/>
+    </g>
+    
+    <!-- Overlay for text -->
+    <circle cx="16" cy="16" r="12" fill="#1976D2" opacity="0.15"/>
+    
+    <!-- Text -->
+    <text x="16" y="19" font-family="Arial Black, sans-serif" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">
+        DDC
+    </text>
+</svg>
